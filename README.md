@@ -1,4 +1,4 @@
-<p align="center"><img src="https://cdn.discordapp.com/attachments/725849484139036674/756230655330746509/icon.png" width="128" height="128"></p>
+<p align="center"><img src="https://github.com/CaelTheColher/Capes/blob/architectury/common/src/main/resources/assets/capes/icon.png" width="128" height="128"></p>
 <h3 align="center">Fabric Capes</h3>
 <p align="center">Lets you use capes from OptiFine, LabyMod and other cape mods.</p>
 <p align="center">
