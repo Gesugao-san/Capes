@@ -2,13 +2,13 @@
   "modmenu.nameTranslation.modmenu": "Capes",
   "modmenu.descriptionTranslation.capes": "A mod that lets you use <rainbow>capes</rainbow> from OptiFine, LabyMod, Cosmetica, Wynntils, Capes++, and the MinecraftCapes mods.",
   "modmenu.summaryTranslation.capes": "A mod that lets you use capes from few sources.",
-  "options.capes.title": "Pelerin Seçenekleri",
+  "options.capes.title": "Pelerin Ayarları",
   "options.capes.capetype": "Pelerin Türü: %s",
-  "options.capes.optifineeditor": "OptiFine Cape Editor",
-  "options.capes.elytra": "Elytra Texture",
-  "options.capes.selector": "Cape Selector",
-  "options.capes.toggle": "Toggle",
-  "options.capes.other": "Other",
-  "options.capes.selector.elytra": "Toggle Elytra",
-  "options.capes.selector.player": "Toggle Player"
+  "options.capes.optifineeditor": "OptiFine Pelerin Düzenleyici",
+  "options.capes.elytra": "Elitrada Pelerin Dokusu",
+  "options.capes.selector": "Pelerin Seçici",
+  "options.capes.toggle": "Aç/Kapa",
+  "options.capes.other": "Diğer",
+  "options.capes.selector.elytra": "Elitra Aç/Kapa",
+  "options.capes.selector.player": "Oyuncu Aç/Kapa"
 }

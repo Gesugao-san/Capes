@@ -56,7 +56,7 @@ object PlaceholderEntity {
     fun getElytraTexture(): Identifier {
         val handler = PlayerHandler.fromProfile(gameProfile)
         val capeTexture = getCapeTexture()
-        return if (handler.hasElytraTexture && Capes.CONFIG.enableElytraTexture && capeTexture != null) capeTexture else Identifier.of("textures/entity/elytra.png")
+        return if (handler.hasElytraTexture && Capes.CONFIG.enableElytraTexture && capeTexture != null) capeTexture else Identifier.of("textures/entity/equipment/wings/elytra.png");
     }
 
     fun getSkinTexture(): Identifier = skin.texture

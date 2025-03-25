@@ -32,7 +32,7 @@ public class MixinPlayerListEntry {
             CapeConfig config = Capes.INSTANCE.getCONFIG();
             SkinTextures oldTextures = cir.getReturnValue();
             Identifier capeTexture = handler.getCape();
-            Identifier elytraTexture = handler.getHasElytraTexture() && config.getEnableElytraTexture() ? capeTexture : Identifier.of("textures/entity/elytra.png");
+            Identifier elytraTexture = handler.getHasElytraTexture() && config.getEnableElytraTexture() ? capeTexture : Identifier.of("textures/entity/equipment/wings/elytra.png");
             SkinTextures newTextures = new SkinTextures(
                     oldTextures.texture(), oldTextures.textureUrl(),
                     capeTexture, elytraTexture,
