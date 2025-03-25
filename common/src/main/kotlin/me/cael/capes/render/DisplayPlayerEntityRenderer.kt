@@ -80,10 +80,10 @@ class DisplayPlayerEntityRenderer(val ctx: EntityRendererFactory.Context, slim: 
 
     fun setAngles(f: Float, g: Float) {
         model.body.yaw = 0.0f
-        model.rightArm.pivotZ = 0.0f
-        model.rightArm.pivotX = -5.0f
-        model.leftArm.pivotZ = 0.0f
-        model.leftArm.pivotX = 5.0f
+        model.rightArm.originZ = 0.0f
+        model.rightArm.originX = -5.0f
+        model.leftArm.originZ = 0.0f
+        model.leftArm.originX = 5.0f
 
         model.rightArm.pitch = MathHelper.cos(f * 0.6662f + 3.1415927f) * 2.0f * g * 0.5f
         model.leftArm.pitch = MathHelper.cos(f * 0.6662f) * 2.0f * g * 0.5f
@@ -100,14 +100,14 @@ class DisplayPlayerEntityRenderer(val ctx: EntityRendererFactory.Context, slim: 
         model.leftArm.yaw = 0.0f
 
         model.body.pitch = 0.0f
-        model.rightLeg.pivotZ = 0.1f
-        model.leftLeg.pivotZ = 0.1f
-        model.rightLeg.pivotY = 12.0f
-        model.leftLeg.pivotY = 12.0f
-        model.head.pivotY = 0.0f
-        model.body.pivotY = 0.0f
-        model.leftArm.pivotY = 2.0f
-        model.rightArm.pivotY = 2.0f
+        model.rightLeg.originZ = 0.1f
+        model.leftLeg.originZ = 0.1f
+        model.rightLeg.originY = 12.0f
+        model.leftLeg.originY = 12.0f
+        model.head.originY = 0.0f
+        model.body.originY = 0.0f
+        model.leftArm.originY = 2.0f
+        model.rightArm.originY = 2.0f
     }
     
     private fun setModelPose() {

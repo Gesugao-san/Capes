@@ -59,8 +59,8 @@ object FabricCapes : ClientModInitializer {
             .append("URL: ${handler.capeType?.getURL(profile)}")
 
         val text = Text.literal("Click here to copy debug info for player ${profile.name}.")
-        val clickEvent = ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, infoText.string)
-        val hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, infoText)
+        val clickEvent = ClickEvent.CopyToClipboard(infoText.string)
+        val hoverEvent = HoverEvent.ShowText(infoText)
         val style = Style.EMPTY
             .withClickEvent(clickEvent)
             .withHoverEvent(hoverEvent)

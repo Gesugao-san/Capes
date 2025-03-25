@@ -85,7 +85,7 @@ class SelectorMenu(parent: Screen, gameOptions: GameOptions) : MainMenu(parent, 
         val quaternion = RotationAxis.POSITIVE_Z.rotationDegrees(180.0f)
         matrixStack2.multiply(quaternion)
 
-        DiffuseLighting.method_34742()
+        DiffuseLighting.enableGuiShaderLighting()
         val entityRenderDispatcher = MinecraftClient.getInstance().entityRenderDispatcher
         entityRenderDispatcher.setRenderShadows(false)
         val immediate = MinecraftClient.getInstance().bufferBuilders.entityVertexConsumers

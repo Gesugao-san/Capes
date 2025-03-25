@@ -20,6 +20,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
 import java.util.concurrent.Executors
+import java.util.function.Supplier
 
 class PlayerHandler(var profile: GameProfile) {
     val uuid: UUID = profile.id
@@ -145,7 +146,7 @@ class PlayerHandler(var profile: GameProfile) {
                     val animatedCapeFrames = parseAnimatedCape(cape)
                     animatedCapeFrames.forEach { (frame, texture) ->
                         MinecraftClient.getInstance().textureManager.registerTexture(
-                            identifier("$uuid/$frame"), NativeImageBackedTexture(texture)
+                            identifier("$uuid/$frame"), NativeImageBackedTexture({"$uuid/$frame"}, texture)
                         )
                     }
                     this.maxFrames = animatedCapeFrames.size
@@ -154,7 +155,7 @@ class PlayerHandler(var profile: GameProfile) {
                 } else {
                     this.hasElytraTexture = cape.width.floorDiv(cape.height) == 2
                     MinecraftClient.getInstance().textureManager.registerTexture(
-                        identifier(uuid.toString()), NativeImageBackedTexture(parseCape(cape))
+                        identifier(uuid.toString()), NativeImageBackedTexture({uuid.toString()}, parseCape(cape))
                     )
                     this.hasCape = true
                 }
