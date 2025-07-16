@@ -1,21 +1,16 @@
 package me.cael.capes.menu
 
-import com.mojang.blaze3d.systems.RenderSystem
 import me.cael.capes.Capes
-import me.cael.capes.render.DisplayPlayerEntityRenderer
 import me.cael.capes.render.PlaceholderEntity
-import net.minecraft.client.MinecraftClient
+import me.cael.capes.render.PlaceholderEntityRenderState
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.option.GameOptions
-import net.minecraft.client.render.DiffuseLighting
-import net.minecraft.client.render.entity.EntityRendererFactory
-import net.minecraft.client.render.entity.equipment.EquipmentModelLoader
-import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.screen.ScreenTexts
 import net.minecraft.text.Text
-import net.minecraft.util.math.RotationAxis
+import org.joml.Quaternionf
+import org.joml.Vector3f
 
 class SelectorMenu(parent: Screen, gameOptions: GameOptions) : MainMenu(parent, gameOptions) {
 
@@ -56,8 +51,8 @@ class SelectorMenu(parent: Screen, gameOptions: GameOptions) : MainMenu(parent, 
     override fun render(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
         super.render(context, mouseX, mouseY, delta)
 
-        val playerX : Int = width/2
-        val playerY = 215
+        val playerX = (width/2) - 50
+        val playerY = 65
 
         val time = System.currentTimeMillis()
 
@@ -68,44 +63,18 @@ class SelectorMenu(parent: Screen, gameOptions: GameOptions) : MainMenu(parent, 
             entity.prevX = entity.x + 0.025
             entity.updateLimbs()
         }
-        drawPlayer(playerX, playerY, 70, entity)
+
+        drawEntity(context, playerX, playerY, playerX + 100, playerY + 300, PlaceholderEntity);
     }
 
+    fun drawEntity(context: DrawContext, x1: Int, y1: Int, x2: Int, y2: Int, entity: PlaceholderEntity) {
+        context.enableScissor(x1, y1, x2, y2)
 
-    fun drawPlayer(x: Int, y: Int, size: Int, entity: PlaceholderEntity) {
-        val matrixStack = RenderSystem.getModelViewStack()
-        matrixStack.pushMatrix()
-        matrixStack.translate(x.toFloat(), y.toFloat(), 1050.0f)
-        matrixStack.scale(1.0f, 1.0f, -1.0f)
-//        RenderSystem.applyModelViewMatrix()
-        val matrixStack2 = MatrixStack()
-        matrixStack2.translate(0.0, 0.0, 1000.0)
-        matrixStack2.scale(size.toFloat(), size.toFloat(), size.toFloat())
+        val entityRenderer = PlaceholderEntity.renderer
+        val entityRenderState: PlaceholderEntityRenderState = entityRenderer.getAndUpdatePlaceholderRenderState(entity)
 
-        val quaternion = RotationAxis.POSITIVE_Z.rotationDegrees(180.0f)
-        matrixStack2.multiply(quaternion)
-
-        DiffuseLighting.enableGuiShaderLighting()
-        val entityRenderDispatcher = MinecraftClient.getInstance().entityRenderDispatcher
-        entityRenderDispatcher.setRenderShadows(false)
-        val immediate = MinecraftClient.getInstance().bufferBuilders.entityVertexConsumers
-        val ctx = EntityRendererFactory.Context(
-            MinecraftClient.getInstance().entityRenderDispatcher,
-            MinecraftClient.getInstance().itemModelManager,
-            MinecraftClient.getInstance().mapRenderer,
-            MinecraftClient.getInstance().blockRenderManager,
-            MinecraftClient.getInstance().resourceManager,
-            MinecraftClient.getInstance().loadedEntityModels,
-            EquipmentModelLoader(),
-            MinecraftClient.getInstance().textRenderer
-        )
-        val displayPlayerEntityRenderer = DisplayPlayerEntityRenderer(ctx, entity.slim)
-        displayPlayerEntityRenderer.render(entity, 1.0f, matrixStack2, immediate, 0xF000F0)
-        immediate.draw()
-        entityRenderDispatcher.setRenderShadows(true)
-        matrixStack.popMatrix()
-//        RenderSystem.applyModelViewMatrix()
-        DiffuseLighting.enableGuiDepthLighting()
+        context.addEntity(entityRenderState, 69f, Vector3f(0.0f, 0.0f, 0.0f), Quaternionf().rotateZ(Math.PI.toFloat()), null, x1, y1, x2, y2)
+        context.disableScissor()
     }
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {

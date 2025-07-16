@@ -6,7 +6,9 @@
   "mixins": [
   ],
   "client": [
+    "AccessorEntityRenderDispatcher",
     "MixinCapeFeatureRenderer",
+    "MixinEntityRenderDispatcher",
     "MixinPlayerListEntry",
     "MixinSkinOptionsScreen"
   ],
