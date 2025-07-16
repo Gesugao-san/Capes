@@ -1,4 +1,5 @@
 {
+  "modmenu.descriptionTranslation.capes": "一个允许你使用来自OptiFine、LabyMod、Cosmetica、Wynntils、Capes++和MinecraftCapes Mod披风的模组。",
   "options.capes.title": "披风选项",
   "options.capes.capetype": "披风类型: %s",
   "options.capes.optifineeditor": "OptiFine 披风编辑器",
