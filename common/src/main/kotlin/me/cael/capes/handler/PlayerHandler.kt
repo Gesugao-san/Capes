@@ -17,10 +17,9 @@ import net.minecraft.util.Identifier
 import org.apache.commons.codec.binary.Base64
 import java.io.*
 import java.net.HttpURLConnection
-import java.net.URL
+import java.net.URI
 import java.util.*
 import java.util.concurrent.Executors
-import java.util.function.Supplier
 
 class PlayerHandler(var profile: GameProfile) {
     val uuid: UUID = profile.id
@@ -37,7 +36,7 @@ class PlayerHandler(var profile: GameProfile) {
 
     companion object {
         val instances = HashMap<UUID, PlayerHandler>()
-        val capeExecutor = Executors.newFixedThreadPool(2)
+        val capeExecutor = Executors.newCachedThreadPool()
 
         fun fromProfile(profile: GameProfile) = instances[profile.id] ?: PlayerHandler(profile)
 
@@ -61,8 +60,8 @@ class PlayerHandler(var profile: GameProfile) {
         }
 
         fun connection(url: String): HttpURLConnection {
-            val connection = URL(url).openConnection(MinecraftClient.getInstance().networkProxy) as HttpURLConnection
-            connection.addRequestProperty("User-Agent", "Mozilla/4.0")
+            val connection = URI(url).toURL().openConnection(MinecraftClient.getInstance().networkProxy) as HttpURLConnection
+            connection.addRequestProperty("User-Agent", "Mozilla/5.0")
             connection.doInput = true
             connection.doOutput = false
             return connection
@@ -104,6 +103,7 @@ class PlayerHandler(var profile: GameProfile) {
     fun setWynntilsCape(connection: HttpURLConnection): Boolean {
         val body = JsonObject()
         body.addProperty("uuid", uuid.toString())
+        body.addProperty("authToken", "")
         val data = body.toString().toByteArray()
         connection.doOutput = true
         connection.requestMethod = "POST"

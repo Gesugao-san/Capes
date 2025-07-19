@@ -84,8 +84,6 @@ class PlaceholderEntityRenderer(ctx: EntityRendererFactory.Context, slim: Boolea
         playerEntityRenderState.leftWingRoll = -(Math.PI / 12).toFloat()
         playerEntityRenderState.leftWingPitch = (Math.PI / 12).toFloat()
 
-
-        model.parts.forEach { it.visible = false }
         playerEntityRenderState.name = placeholderEntity.gameProfile.name
     }
 }
