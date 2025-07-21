@@ -15,7 +15,6 @@ object Capes {
     val LOGGER = LoggerFactory.getLogger("Capes")
 
     val CONFIG: CapeConfig by lazy {
-        val parser = JsonParser()
         val gson = GsonBuilder().setPrettyPrinting().create()
         val configFile = File("${Platform.getConfigDirectory()}${File.separator}capes.json5")
         var finalConfig: CapeConfig
@@ -23,7 +22,7 @@ object Capes {
         try {
             if (configFile.createNewFile()) {
                 LOGGER.info("No config file found, creating a new one...")
-                val json: String = gson.toJson(parser.parse(gson.toJson(CapeConfig())))
+                val json: String = gson.toJson(JsonParser.parseString(gson.toJson(CapeConfig())))
                 PrintWriter(configFile).use { out -> out.println(json) }
                 finalConfig = CapeConfig()
                 LOGGER.info("Successfully created default config file.")
@@ -41,6 +40,8 @@ object Capes {
             finalConfig = CapeConfig()
             LOGGER.warn("Defaulting to original config.")
         }
+        @Suppress("SENSELESS_COMPARISON")
+        if (finalConfig.clientCapeType == null) finalConfig.clientCapeType = CapeType.MINECRAFT
         finalConfig
     }
 

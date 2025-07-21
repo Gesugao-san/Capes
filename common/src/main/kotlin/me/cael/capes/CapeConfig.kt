@@ -8,17 +8,16 @@ import java.io.PrintWriter
 class CapeConfig {
     var clientCapeType = CapeType.MINECRAFT
     var enableOptifine = true
-    var enableWynntils = false
+    var enableLabyMod = false
     var enableMinecraftCapesMod = false
     var enableCosmetica = false
     var enableCloaksPlus = false
     var enableElytraTexture = true
 
     fun save() {
-        val parser = JsonParser()
         val gson = GsonBuilder().setPrettyPrinting().create()
         val configFile = File("${Platform.getConfigDirectory()}${File.separator}capes.json5")
-        val json: String = gson.toJson(parser.parse(gson.toJson(this)))
+        val json: String = gson.toJson(JsonParser.parseString(gson.toJson(this)))
         PrintWriter(configFile).use { out -> out.println(json) }
     }
 

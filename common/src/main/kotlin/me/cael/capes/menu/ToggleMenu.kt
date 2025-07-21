@@ -27,10 +27,10 @@ class ToggleMenu(parent: Screen, gameOptions: GameOptions) : MainMenu(parent, ga
             it.message = CapeType.MINECRAFTCAPES.getToggleText(config.enableMinecraftCapesMod)
         }.position(width / 2 - 155 + 160, height / 7 + 24).size(150, 20).build())
 
-        addDrawableChild(ButtonWidget.builder(CapeType.WYNNTILS.getToggleText(config.enableWynntils)) {
-            config.enableWynntils = !config.enableWynntils
+        addDrawableChild(ButtonWidget.builder(CapeType.LABYMOD.getToggleText(config.enableLabyMod)) {
+            config.enableLabyMod = !config.enableLabyMod
             config.save()
-            it.message = CapeType.WYNNTILS.getToggleText(config.enableWynntils)
+            it.message = CapeType.LABYMOD.getToggleText(config.enableLabyMod)
         }.position(width / 2 - 155, height / 7 + 2 * 24).size(150, 20).build())
 
         addDrawableChild(ButtonWidget.builder(CapeType.COSMETICA.getToggleText(config.enableCosmetica)) {

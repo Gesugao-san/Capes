@@ -4,7 +4,7 @@
   "version": "${version}",
 
   "name": "Capes",
-  "description": "A mod that lets you use capes from Optifine, LabyMod, Cosmetica, Wynntils, Capes++, and the MinecraftCapes Mod.",
+  "description": "A mod that lets you use capes from Optifine, LabyMod, Cosmetica, Capes++, and the MinecraftCapes Mod.",
   "authors": [
     "Cael"
   ],
@@ -37,7 +37,7 @@
     "fabricloader": ">=0.14.21",
     "fabric": "*",
     "fabric-language-kotlin": "*",
-    "minecraft": ">=1.21",
+    "minecraft": ">=1.21.6",
     "java": ">=21"
   }
 }

@@ -1,19 +1,18 @@
 package me.cael.capes.handler
 
 import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import com.mojang.authlib.GameProfile
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import me.cael.capes.CapeType
 import me.cael.capes.Capes
 import me.cael.capes.Capes.identifier
+import me.cael.capes.handler.data.CosmeticaData
 import me.cael.capes.handler.data.MCMData
-import me.cael.capes.handler.data.WynntilsData
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.texture.NativeImage
 import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.util.Identifier
+import net.minecraft.util.Uuids
 import org.apache.commons.codec.binary.Base64
 import java.io.*
 import java.net.HttpURLConnection
@@ -30,6 +29,7 @@ class PlayerHandler(var profile: GameProfile) {
     var hasElytraTexture: Boolean = true
     var hasAnimatedCape: Boolean = false
     var capeType: CapeType? = null
+    var hasLoadedTextures = false
     init {
         instances[uuid] = this
     }
@@ -49,13 +49,13 @@ class PlayerHandler(var profile: GameProfile) {
                 capeExecutor.submit {
                     playerHandler.setCape(config.clientCapeType)
                 }
-            } else {
+            } else if (!playerHandler.hasLoadedTextures) {
                 capeExecutor.submit {
-                    if (profile.id.toString() == "5f91fdfd-ea97-473c-bb77-c8a2a0ed3af9") { playerHandler.setStandardCape(connection("https://athena.wynntils.com/capes/user/${profile.id}")); return@submit }
                     for (capeType in CapeType.values()) {
                         if (playerHandler.setCape(capeType)) break
                     }
                 }
+                playerHandler.hasLoadedTextures = true
             }
         }
 
@@ -86,38 +86,28 @@ class PlayerHandler(var profile: GameProfile) {
         val connection = connection(capeURL)
 
         return when(capeType) {
-            CapeType.WYNNTILS -> setWynntilsCape(connection)
+            CapeType.LABYMOD -> setStandardCape(connection, true)
+            CapeType.COSMETICA -> setCosmeticaCape(connection)
             CapeType.MINECRAFTCAPES -> setMCMCape(connection)
             else -> setStandardCape(connection)
         }.also { if (it) this.capeType = capeType}
     }
 
-    fun setStandardCape(connection: HttpURLConnection): Boolean {
+    fun setStandardCape(connection: HttpURLConnection, labymod: Boolean = false): Boolean {
         connection.connect()
         if (connection.responseCode / 100 == 2) {
-            return setCapeTexture(connection.inputStream)
+            return setCapeTexture(connection.inputStream, labymod = labymod)
         }
         return false
     }
 
-    fun setWynntilsCape(connection: HttpURLConnection): Boolean {
-        val body = JsonObject()
-        body.addProperty("uuid", uuid.toString())
-        body.addProperty("authToken", "")
-        val data = body.toString().toByteArray()
-        connection.doOutput = true
-        connection.requestMethod = "POST"
-        connection.addRequestProperty("Content-Type", "application/json")
-        connection.addRequestProperty("Content-Length", data.size.toString())
-        val o = connection.outputStream
-        o.write(data)
-        o.flush()
+    fun setCosmeticaCape(connection: HttpURLConnection): Boolean {
         connection.connect()
         if (connection.responseCode / 100 == 2) {
             val reader: Reader = InputStreamReader(connection.inputStream, "UTF-8")
-            val cosmetics = JsonParser.parseReader(reader).asJsonObject["user"].asJsonObject["cosmetics"]
-            val result = Gson().fromJson(cosmetics, WynntilsData::class.java)
-            return this.setCapeTextureFromBase64(result.texture)
+            val result = Gson().fromJson(reader, CosmeticaData::class.java)
+            return result.cape?.origin == "Cosmetica"
+                    && setCapeTextureFromBase64(result.cape.image.substring(22), result.cape.isAnimated())
         }
         return false
     }
@@ -138,9 +128,12 @@ class PlayerHandler(var profile: GameProfile) {
         return setCapeTexture(ByteArrayInputStream(bytes), animated)
     }
 
-    fun setCapeTexture(image: InputStream, animated: Boolean = false): Boolean {
+    fun setCapeTexture(image: InputStream, animated: Boolean = false, labymod: Boolean = false): Boolean {
         return try {
             val cape = NativeImage.read(image)
+            if (labymod && Uuids.toUuid(cape.copyPixelsArgb()).toString() == "ff305f81-ff30-5f90-ff30-5f90ff305f90") {
+                return false
+            }
             MinecraftClient.getInstance().submit {
                 if (animated) {
                     val animatedCapeFrames = parseAnimatedCape(cape)
