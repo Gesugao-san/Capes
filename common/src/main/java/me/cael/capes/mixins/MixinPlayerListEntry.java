@@ -2,6 +2,7 @@ package me.cael.capes.mixins;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import me.cael.capes.CapeConfig;
@@ -58,8 +59,15 @@ public abstract class MixinPlayerListEntry {
 
         String textures = property.get().value();
         String json = new String(Base64.getDecoder().decode(textures), StandardCharsets.UTF_8);
-        JsonElement element = JsonParser.parseString(json).getAsJsonObject().get("profileName");
-        if (element == null) return false;
+        JsonElement root;
+        try {
+            root = JsonParser.parseString(json);
+        } catch (JsonSyntaxException e) {
+            return false;
+        }
+        if (!root.isJsonObject()) return false;
+        JsonElement element = root.getAsJsonObject().get("profileName");
+        if (element == null || element.isJsonNull()) return false;
 
         String profileName = element.getAsString();
         return profile.getId().version() == 4 || (profile.getId().version() == 2 && profile.getName().equals(profileName));
