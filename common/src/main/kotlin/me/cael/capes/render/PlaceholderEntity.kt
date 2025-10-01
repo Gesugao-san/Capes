@@ -2,11 +2,13 @@ package me.cael.capes.render
 
 import me.cael.capes.Capes
 import me.cael.capes.handler.PlayerHandler
-import me.cael.capes.mixins.AccessorEntityRenderDispatcher
+import me.cael.capes.mixins.AccessorEntityRenderManager
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.entity.EntityRendererFactory
 import net.minecraft.client.util.DefaultSkinHelper
-import net.minecraft.client.util.SkinTextures
+import net.minecraft.entity.player.PlayerSkinType
+import net.minecraft.entity.player.SkinTextures
+import net.minecraft.util.AssetInfo
 import net.minecraft.util.Identifier
 import kotlin.math.sqrt
 
@@ -37,13 +39,15 @@ object PlaceholderEntity {
             MinecraftClient.getInstance().blockRenderManager,
             MinecraftClient.getInstance().resourceManager,
             MinecraftClient.getInstance().loadedEntityModels,
-            (MinecraftClient.getInstance().entityRenderDispatcher as AccessorEntityRenderDispatcher).equipmentModelLoader,
-            MinecraftClient.getInstance().textRenderer
+            (MinecraftClient.getInstance().entityRenderDispatcher as AccessorEntityRenderManager).equipmentModelLoader,
+            MinecraftClient.getInstance().atlasManager,
+            MinecraftClient.getInstance().textRenderer,
+            MinecraftClient.getInstance().playerSkinCache
         )
         renderer = PlaceholderEntityRenderer(ctx, slim)
         MinecraftClient.getInstance().skinProvider.fetchSkinTextures(gameProfile).thenAccept {
             skin = it.get()
-            slim = skin.model == SkinTextures.Model.SLIM
+            slim = skin.model == PlayerSkinType.SLIM
             renderer = PlaceholderEntityRenderer(ctx, slim)
         }
     }
@@ -59,22 +63,23 @@ object PlaceholderEntity {
         this.limbAngle += this.limbDistance
     }
 
-    fun getCapeTexture(): Identifier? {
+    fun getCapeTexture(): AssetInfo.TextureAsset? {
         if (!capeLoaded) {
             capeLoaded = true
             PlayerHandler.onLoadTexture(gameProfile)
         }
         val handler = PlayerHandler.fromProfile(gameProfile)
-        return if (handler.hasCape) handler.getCape() else skin.capeTexture
+        return if (handler.hasCape) handler.getCape() else skin.cape
     }
 
-    fun getElytraTexture(): Identifier {
+    fun getElytraTexture(): AssetInfo.TextureAsset {
         val handler = PlayerHandler.fromProfile(gameProfile)
         val capeTexture = getCapeTexture()
-        return if (handler.hasElytraTexture && Capes.CONFIG.enableElytraTexture && capeTexture != null) capeTexture else Identifier.of("textures/entity/equipment/wings/elytra.png");
+        return if (handler.hasElytraTexture && Capes.CONFIG.enableElytraTexture && capeTexture != null) capeTexture
+        else AssetInfo.TextureAssetInfo(Identifier.of("textures/entity/equipment/wings/elytra.png"),null);
     }
 
     fun getSkinTextures() : SkinTextures {
-        return SkinTextures(skin.texture, skin.textureUrl, getCapeTexture(), getElytraTexture(), skin.model, skin.secure)
+        return SkinTextures(skin.body, getCapeTexture(), getElytraTexture(), skin.model, skin.secure)
     }
 }

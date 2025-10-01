@@ -2,15 +2,19 @@ package me.cael.capes.render
 
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.VertexConsumerProvider
+import net.minecraft.client.render.command.OrderedRenderCommandQueue
 import net.minecraft.client.render.entity.EntityRendererFactory
 import net.minecraft.client.render.entity.LivingEntityRenderer
 import net.minecraft.client.render.entity.feature.CapeFeatureRenderer
 import net.minecraft.client.render.entity.feature.ElytraFeatureRenderer
 import net.minecraft.client.render.entity.feature.HeadFeatureRenderer
 import net.minecraft.client.render.entity.model.BipedEntityModel
+import net.minecraft.client.render.entity.model.EntityModel
+import net.minecraft.client.render.entity.model.EntityModelLayer
 import net.minecraft.client.render.entity.model.EntityModelLayers
 import net.minecraft.client.render.entity.model.PlayerEntityModel
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState
+import net.minecraft.client.render.state.CameraRenderState
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerModelPart
@@ -21,15 +25,17 @@ import net.minecraft.util.Identifier
 class PlaceholderEntityRenderer(ctx: EntityRendererFactory.Context, slim: Boolean) :
     LivingEntityRenderer<LivingEntity, PlayerEntityRenderState, PlayerEntityModel>(
         ctx,
-        PlayerEntityModel(ctx.getPart(if (slim) EntityModelLayers.PLAYER_SLIM else EntityModelLayers.PLAYER), slim),
+        PlayerEntityModel(ctx.getPart(
+            // I'm supposed to use EntityModelLayers.PLAYER_SLIM here, but it seems there is some mapping conflict that doesn't let me use it rn
+            if (slim) EntityModelLayer(Identifier.ofVanilla("player_slim"), "main")
+            else EntityModelLayers.PLAYER), slim),
         0.5f
     ) {
 
     val placeholderState = createRenderState()
-
     init {
         this.addFeature(CapeFeatureRenderer(this, ctx.entityModels, ctx.equipmentModelLoader))
-        this.addFeature(HeadFeatureRenderer<PlayerEntityRenderState?, PlayerEntityModel?>(this, ctx.entityModels))
+        this.addFeature(HeadFeatureRenderer<PlayerEntityRenderState?, PlayerEntityModel?>(this, ctx.entityModels, ctx.playerSkinCache))
         this.addFeature(
             ElytraFeatureRenderer<PlayerEntityRenderState?, PlayerEntityModel?>(
                 this,
@@ -39,13 +45,13 @@ class PlaceholderEntityRenderer(ctx: EntityRendererFactory.Context, slim: Boolea
         )
     }
 
-    override fun render(livingEntityRenderState: PlayerEntityRenderState?, matrixStack: MatrixStack?, vertexConsumerProvider: VertexConsumerProvider?, i: Int) {
+    override fun render(livingEntityRenderState: PlayerEntityRenderState, matrixStack: MatrixStack, orderedRenderCommandQueue: OrderedRenderCommandQueue?, cameraRenderState: CameraRenderState) {
         this.model.parts.forEach { it.visible = PlaceholderEntity.showBody }
-        super.render(livingEntityRenderState, matrixStack, vertexConsumerProvider, i)
+        super.render(livingEntityRenderState, matrixStack, orderedRenderCommandQueue, cameraRenderState)
     }
 
     override fun getTexture(playerEntityRenderState: PlayerEntityRenderState): Identifier? {
-        return playerEntityRenderState.skinTextures.texture()
+        return playerEntityRenderState.skinTextures.body.texturePath()
     }
 
     override fun scale(playerEntityRenderState: PlayerEntityRenderState?, matrixStack: MatrixStack) {
@@ -84,6 +90,6 @@ class PlaceholderEntityRenderer(ctx: EntityRendererFactory.Context, slim: Boolea
         playerEntityRenderState.leftWingRoll = -(Math.PI / 12).toFloat()
         playerEntityRenderState.leftWingPitch = (Math.PI / 12).toFloat()
 
-        playerEntityRenderState.name = placeholderEntity.gameProfile.name
+//        playerEntityRenderState.name = placeholderEntity.gameProfile.name
     }
 }

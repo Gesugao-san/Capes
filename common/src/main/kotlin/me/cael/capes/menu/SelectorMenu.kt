@@ -3,6 +3,7 @@ package me.cael.capes.menu
 import me.cael.capes.Capes
 import me.cael.capes.render.PlaceholderEntity
 import me.cael.capes.render.PlaceholderEntityRenderState
+import net.minecraft.client.gui.Click
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.ButtonWidget
@@ -77,10 +78,10 @@ class SelectorMenu(parent: Screen, gameOptions: GameOptions) : MainMenu(parent, 
         context.disableScissor()
     }
 
-    override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
-        super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)
+    override fun mouseDragged(click: Click?, offsetX: Double, offsetY: Double): Boolean {
+        super.mouseDragged(click, offsetX, offsetY)
         PlaceholderEntity.prevYaw = PlaceholderEntity.yaw
-        PlaceholderEntity.yaw -= deltaX.toFloat()
+        PlaceholderEntity.yaw -= offsetX.toFloat()
         return true
     }
 

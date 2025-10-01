@@ -6,7 +6,8 @@ import me.cael.capes.Capes;
 import me.cael.capes.handler.PlayerHandler;
 import me.cael.capes.util.UtilsKt;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.util.SkinTextures;
+import net.minecraft.entity.player.SkinTextures;
+import net.minecraft.util.AssetInfo;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,10 +36,10 @@ public abstract class MixinPlayerListEntry {
         if (handler.getHasCape()) {
             CapeConfig config = Capes.INSTANCE.getCONFIG();
             SkinTextures oldTextures = cir.getReturnValue();
-            Identifier capeTexture = handler.getCape();
-            Identifier elytraTexture = handler.getHasElytraTexture() && config.getEnableElytraTexture() ? capeTexture : Identifier.of("textures/entity/equipment/wings/elytra.png");
+            AssetInfo.TextureAsset capeTexture = handler.getCape();
+            AssetInfo.TextureAsset elytraTexture = handler.getHasElytraTexture() && config.getEnableElytraTexture() ? capeTexture : new AssetInfo.TextureAssetInfo(Identifier.of("textures/entity/equipment/wings/elytra.png"),null);
             SkinTextures newTextures = new SkinTextures(
-                    oldTextures.texture(), oldTextures.textureUrl(),
+                    oldTextures.body(),
                     capeTexture, elytraTexture,
                     oldTextures.model(), oldTextures.secure());
             cir.setReturnValue(newTextures);

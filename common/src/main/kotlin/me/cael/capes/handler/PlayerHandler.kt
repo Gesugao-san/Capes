@@ -11,7 +11,7 @@ import me.cael.capes.handler.data.MCMData
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.texture.NativeImage
 import net.minecraft.client.texture.NativeImageBackedTexture
-import net.minecraft.util.Identifier
+import net.minecraft.util.AssetInfo
 import net.minecraft.util.Uuids
 import org.apache.commons.codec.binary.Base64
 import java.io.*
@@ -68,16 +68,16 @@ class PlayerHandler(var profile: GameProfile) {
         }
     }
 
-    fun getCape(): Identifier {
-        if (!hasAnimatedCape) return identifier(uuid.toString())
+    fun getCape(): AssetInfo.TextureAsset {
+        if (!hasAnimatedCape) return AssetInfo.TextureAssetInfo(identifier(uuid.toString()), identifier(uuid.toString()))
         val time = System.currentTimeMillis()
         return if (time > this.lastFrameTime + 100L) {
             val thisFrame = (this.lastFrame + 1) % this.maxFrames
             this.lastFrame = thisFrame
             this.lastFrameTime = time
-            identifier("$uuid/$thisFrame")
+            AssetInfo.TextureAssetInfo(identifier("$uuid/$thisFrame"), identifier("$uuid/$thisFrame"))
         } else {
-            identifier("$uuid/${this.lastFrame}")
+            AssetInfo.TextureAssetInfo(identifier("$uuid/${this.lastFrame}"), identifier("$uuid/${this.lastFrame}"))
         }
     }
 

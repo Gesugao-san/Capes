@@ -25,9 +25,6 @@
         "adapter": "kotlin",
         "value": "me.cael.capes.fabric.FabricCapes"
       }
-    ],
-    "modmenu": [
-      "me.cael.capes.fabric.compatibility.ModMenuCompatibility"
     ]
   },
   "mixins": [
