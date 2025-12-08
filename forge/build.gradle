@@ -21,6 +21,15 @@ architectury {
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
+
+    runs {
+        clientLogin {
+            client()
+            ideConfigGenerated true
+            mainClass.set 'net.covers1624.devlogin.DevLogin'
+            programArgs '--launch_target', 'net.minecraftforge.bootstrap.ForgeBootstrap'
+        }
+    }
 }
 
 configurations {
@@ -50,7 +59,7 @@ dependencies {
 
     implementation "thedarkcolour:kotlinforforge-neoforge:${forge_kotlin_version}"
 
-    modImplementation "com.ptsmods:devlogin:3.5"
+    localRuntime 'net.covers1624:DevLogin:0.1.0.5'
 }
 
 processResources {
