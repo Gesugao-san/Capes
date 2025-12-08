@@ -116,8 +116,13 @@ class PlayerHandler(var profile: GameProfile) {
         connection.connect()
         if (connection.responseCode / 100 == 2) {
             val reader: Reader = InputStreamReader(connection.inputStream, "UTF-8")
-            val result = Gson().fromJson(reader, MCMData::class.java)
-            return setCapeTextureFromBase64(result.textures["cape"], result.animatedCape)
+            val profile = Gson().fromJson(reader, MCMData::class.java)
+
+            val result = connection(profile.cape_url)
+            result.connect();
+            if(result.responseCode / 100 == 2) {
+                return setCapeTexture(result.inputStream, profile.animated_cape_url != null, false)
+            }
         }
         return false
     }
