@@ -18,7 +18,9 @@ jobs:
           cache: gradle
 
       - name: Build and publish
-        run: ./gradlew :fabric:build fabricPublish --stacktrace
+        run: |
+          chmod +x ./gradlew
+          ./gradlew :fabric:build fabricPublish --stacktrace
         env:
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GH_API_KEY }}
