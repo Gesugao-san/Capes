@@ -19,19 +19,6 @@ architectury {
     }
 }
 
-loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
-
-    runs {
-        clientLogin {
-            client()
-            ideConfigGenerated true
-            mainClass.set 'net.covers1624.devlogin.DevLogin'
-            programArgs '--launch_target', 'net.minecraftforge.bootstrap.ForgeBootstrap'
-        }
-    }
-}
-
 configurations {
     common
     shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
@@ -59,7 +46,7 @@ dependencies {
 
     implementation "thedarkcolour:kotlinforforge-neoforge:${forge_kotlin_version}"
 
-    localRuntime 'net.covers1624:DevLogin:0.1.0.5'
+    modImplementation "com.ptsmods:devlogin:3.5"
 }
 
 processResources {
